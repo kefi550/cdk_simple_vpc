@@ -32,6 +32,10 @@ export class VpcStack extends cdk.Stack {
       securityGroupName: 'kefi-vpc-internal',
       description: 'allow all trafic in kefi vpc internal',
     });
+    this.internalSg.addIngressRule(
+      this.internalSg,
+      ec2.Port.allTraffic(),
+    );
 
     new cdk.CfnOutput(this, 'OutputVpcId', {
       value: this.vpc.vpcId,
@@ -52,6 +56,10 @@ export class VpcStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'OutputVpcIsolatedSubnetIds', {
       value: this.vpc.isolatedSubnets.map(subnet => subnet.subnetId).join(','),
       exportName: `${this.stackName}::VpcIsolatedSubnetIds`,
+    });
+    new cdk.CfnOutput(this, 'OutputVpcInternalSg', {
+      value: this.internalSg.securityGroupId,
+      exportName: `${this.stackName}::VpcInternalSg`,
     });
   }
 }
